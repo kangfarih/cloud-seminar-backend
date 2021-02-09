@@ -1,5 +1,5 @@
 const express = require('express');
-const port = Number(process.env.PORT || 8787);
+const port = Number(Process.env.PORT || 8787);
 const mongoose = require('mongoose');
 
 // setup express
@@ -27,5 +27,5 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(port, () => {
-    console.log(`App is listening at localhost : ${port}`);
+    console.log(`App is listening at ${port}`);
 })
