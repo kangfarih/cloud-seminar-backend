@@ -1,0 +1,27 @@
+{
+  "name": "cloud-seminar-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kangfarih/cloud-seminar-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kangfarih/cloud-seminar-backend/issues"
+  },
+  "homepage": "https://github.com/kangfarih/cloud-seminar-backend#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.11.15"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
