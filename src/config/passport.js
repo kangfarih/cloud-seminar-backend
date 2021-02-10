@@ -1,30 +1,35 @@
-const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
-const config = require('./config');
-const { tokenTypes } = require('./tokens');
-const { User } = require('../models');
+const JwtStrategy = require('passport-jwt').Strategy;
+const BearerStrategy = require('passport-http-bearer');
+const { ExtractJwt } = require('passport-jwt');
+const { jwtSecret } = require('./vars');
+const authProviders = require('../api/services/authProviders');
+const User = require('../api/models/user.model');
 
 const jwtOptions = {
-  secretOrKey: config.jwt.secret,
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: jwtSecret,
+  jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
 };
 
-const jwtVerify = async (payload, done) => {
+const jwt = async (payload, done) => {
   try {
-    if (payload.type !== tokenTypes.ACCESS) {
-      throw new Error('Invalid token type');
-    }
     const user = await User.findById(payload.sub);
-    if (!user) {
-      return done(null, false);
-    }
-    done(null, user);
+    if (user) return done(null, user);
+    return done(null, false);
   } catch (error) {
-    done(error, false);
+    return done(error, false);
   }
 };
 
-const jwtStrategy = new JwtStrategy(jwtOptions, jwtVerify);
-
-module.exports = {
-  jwtStrategy,
+const oAuth = service => async (token, done) => {
+  try {
+    const userData = await authProviders[service](token);
+    const user = await User.oAuthLogin(userData);
+    return done(null, user);
+  } catch (err) {
+    return done(err);
+  }
 };
+
+exports.jwt = new JwtStrategy(jwtOptions, jwt);
+exports.facebook = new BearerStrategy(oAuth('facebook'));
+exports.google = new BearerStrategy(oAuth('google'));

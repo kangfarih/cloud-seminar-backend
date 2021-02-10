@@ -1,38 +1,18 @@
-const mongoose = require('mongoose');
-const app = require('./app');
-const config = require('./config/config');
+// make bluebird default Promise
+Promise = require('bluebird'); // eslint-disable-line no-global-assign
+const { port, env } = require('./config/vars');
 const logger = require('./config/logger');
+const app = require('./config/express');
+const mongoose = require('./config/mongoose');
 
-let server;
-mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
-  logger.info('Connected to MongoDB');
-  server = app.listen(config.port, () => {
-    logger.info(`Listening to port ${config.port}`);
-  });
-});
+// open mongoose connection
+mongoose.connect();
 
-const exitHandler = () => {
-  if (server) {
-    server.close(() => {
-      logger.info('Server closed');
-      process.exit(1);
-    });
-  } else {
-    process.exit(1);
-  }
-};
+// listen to requests
+app.listen(port, () => logger.info(`server started on port ${port} (${env})`));
 
-const unexpectedErrorHandler = (error) => {
-  logger.error(error);
-  exitHandler();
-};
-
-process.on('uncaughtException', unexpectedErrorHandler);
-process.on('unhandledRejection', unexpectedErrorHandler);
-
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received');
-  if (server) {
-    server.close();
-  }
-});
+/**
+* Exports express
+* @public
+*/
+module.exports = app;

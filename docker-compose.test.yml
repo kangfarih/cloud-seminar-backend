@@ -1,6 +1,6 @@
-version: '3'
-
+version: "2"
 services:
-  node-app:
-    container_name: node-app-test
+  boilerplate-api:
     command: yarn test
+    environment:
+      - NODE_ENV=test
