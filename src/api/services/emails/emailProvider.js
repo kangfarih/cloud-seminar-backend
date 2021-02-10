@@ -17,6 +17,10 @@ const transporter = nodemailer.createTransport({
   secure: false, // upgrades later with STARTTLS -- change this based on the PORT
 });
 
+// config
+var urlDomain = "https://cloud-seminar.herokuapp.com/v1";
+var supportEmail = "support@kangfarih.demo";
+
 // verify connection configuration
 transporter.verify((error) => {
   if (error) {
@@ -28,7 +32,7 @@ exports.sendPasswordReset = async (passwordResetObject) => {
   const email = new Email({
     views: { root: __dirname },
     message: {
-      from: 'support@your-app.com',
+      from: supportEmail,
     },
     // uncomment below to send emails in development/test env:
     send: true,
@@ -42,10 +46,10 @@ exports.sendPasswordReset = async (passwordResetObject) => {
         to: passwordResetObject.userEmail,
       },
       locals: {
-        productName: 'Test App',
+        productName: 'Cloud Seminar',
         // passwordResetUrl should be a URL to your app that displays a view where they
         // can enter a new password along with passing the resetToken in the params
-        passwordResetUrl: `https://your-app/new-password/view?resetToken=${passwordResetObject.resetToken}`,
+        passwordResetUrl: `${urlDomain}/new-password/view?resetToken=${passwordResetObject.resetToken}`,
       },
     })
     .catch(() => console.log('error sending password reset email'));
@@ -55,7 +59,7 @@ exports.sendPasswordChangeEmail = async (user) => {
   const email = new Email({
     views: { root: __dirname },
     message: {
-      from: 'support@your-app.com',
+      from: supportEmail,
     },
     // uncomment below to send emails in development/test env:
     send: true,
@@ -69,7 +73,7 @@ exports.sendPasswordChangeEmail = async (user) => {
         to: user.email,
       },
       locals: {
-        productName: 'Test App',
+        productName: 'Cloud Seminar',
         name: user.name,
       },
     })
