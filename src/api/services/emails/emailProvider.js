@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer');
-const { emailConfig } = require('../../../config/vars');
+const {
+  emailConfig
+} = require('../../../config/vars');
 const Email = require('email-templates');
 
 // SMTP is the main transport in Nodemailer for delivering messages.
@@ -10,6 +12,8 @@ const Email = require('email-templates');
 const transporter = nodemailer.createTransport({
   port: emailConfig.port,
   host: emailConfig.host,
+  secure: true,
+  opportunisticTLS: true,
   auth: {
     user: emailConfig.username,
     pass: emailConfig.password,
@@ -30,7 +34,9 @@ transporter.verify((error) => {
 
 exports.sendPasswordReset = async (passwordResetObject) => {
   const email = new Email({
-    views: { root: __dirname },
+    views: {
+      root: __dirname
+    },
     message: {
       from: supportEmail,
     },
@@ -52,12 +58,17 @@ exports.sendPasswordReset = async (passwordResetObject) => {
         passwordResetUrl: `${urlDomain}/new-password/view?resetToken=${passwordResetObject.resetToken}`,
       },
     })
-    .catch(() => console.log('error sending password reset email'));
+    .catch((err) => {
+
+      console.log('error sending password reset email')
+    });
 };
 
 exports.sendPasswordChangeEmail = async (user) => {
   const email = new Email({
-    views: { root: __dirname },
+    views: {
+      root: __dirname
+    },
     message: {
       from: supportEmail,
     },
